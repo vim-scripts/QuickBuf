@@ -9,13 +9,13 @@ if exists("g:qb_loaded") && g:qb_loaded
 endif
 let g:qb_loaded = 1
 
-com -nargs=1 -bang QBufdcmd if s:unlisted | bu<bang> <args> | set buflisted
-			\ | else | bd<bang> <args> | endif
+com -nargs=1 -bang QBufdcmd if s:unlisted|bu<bang> <args>|set buflisted
+			\ |else|bd<bang> <args>|endif
 
-let s:action2cmd = { "u": "bu ", "!u": "bu! ",
+let s:action2cmd = {"u": "bu ", "!u": "bu! ",
 			\"d": "QBufdcmd ", "!d": "QBufdcmd! ",
 			\"w": "bw ", "!w": "bw! ",
-			\"l": "let s:unlisted = 1 - s:unlisted \" " }
+			\"l": "let s:unlisted = 1 - s:unlisted \""}
 
 function s:rebuild()
 	redir @y | silent ls! | redir END
@@ -34,9 +34,9 @@ function s:rebuild()
 			let l:fname = matchstr(l:theline, '"\zs[^"]*')
 			let l:bufnum = matchstr(l:theline, '^ *\zs\d*')
 			call add(s:buflist, s:blen . ( (l:bufnum == bufnr('')) ? "* " : "  " )
-						\.fnamemodify(l:fname,":t") . l:moreinfo
-						\." <" . l:bufnum . "> "
-						\.fnamemodify(l:fname,":h"))
+				\.fnamemodify(l:fname,":t") . l:moreinfo
+				\." <" . l:bufnum . "> "
+				\.fnamemodify(l:fname,":h"))
 		endif
 	endfor
 
@@ -48,7 +48,6 @@ function s:rebuild()
 		let s:cursel = s:blen-1
 	endif
 endfunc
-
 
 function SBRun()
 	if s:blen < 1
@@ -101,7 +100,7 @@ function s:init(onStart)
 		call s:setcmdh(s:cmdh)
 		cunmap j|cunmap k|cunmap u|cunmap d|cunmap w|cunmap l|cunmap q
 		exe "hi Cursor guibg=" . s:cursorbg . " guifg="
-					\ .((s:cursorfg == "") ? "NONE" : s:cursorfg)
+			\ .((s:cursorfg == "") ? "NONE" : s:cursorfg)
 	endif
 endfunc
 
@@ -127,7 +126,9 @@ function s:update_buf(cmd)
 					endif
 				catch
 					echoh ErrorMsg | echo "\r" matchstr(v:exception, '^Vim(\a*):\zs.*') | echoh None
-					call inputsave() | call getchar() | call inputrestore()
+					if l:has_action
+						call inputsave() | call getchar() | call inputrestore()
+					endif
 				endtry
 			endif
 		endif
@@ -138,7 +139,7 @@ endfunc
 function s:setcmdh(height)
 	if a:height > &lines - winnr('$') * (&winminheight+1) - 1
 		call s:init(0)
-		echo "\r" | echoerr "QuickBuf: No room to display buffer list"
+		echo "\r"|echoerr "QuickBuf: No room to display buffer list"
 	else
 		exe "set cmdheight=".a:height
 	endif
