@@ -1,57 +1,36 @@
 QuickBuf
 Vim plugin helps navigate and manipulate buffers
 Maintainer: palnart <palnart@gmail.com>
-Last Change: 2007 Jun 3
 
-Features:
-In general, a quick, small, easy, elegant yet POWERFUL buffer manager for VIM!
-Vim's users want a simple, efficient, and powerful way to manipulate buffers may
-like this! It simply includes everything you need to manipulate buffers!
+Brief description:
+While making the task of browsing and manipulating buffers visual and simple, QuickBuf also offers advanced abilities of dealing with buffers (ex: "unlisted" mode). It's unique among several other buffer managers for creating no dedicated buffer and defining no auto command, thus minimize its interference.
 
-QuickBuf create no buffer, define no autocommand! It just "pop up" when you call!
-Visually navigate buffers with j and k keys; view, delete, wipe out buffer with one
-keystroke; even faster with operator-mode (like Vim); force an operation with '!'
-modifier; switch between 'listed' and hidden 'unlisted' buffers with key l; only
-sensible buffers were shown; undelete operation on 'unlisted' buffers to make them
-become 'listed'!
+Give it a try and you may find it all you need to work with Vim's buffers!
+Any bugs or suggestions, please mail to: palnart@gmail.com
 
-Try it!
-Bugs and suggestions please send to my email: palnart@gmail.com
+Usage:
++ Press the assigned hotkey to activate QuickBuf (default <F4>). It brings out a list of buffers that you can browse and give commands on! Some indicators in the list:
+	- * : the buffer being opened in the active window
+	- = : a buffer being opened in a window, but not active
+	- [+] : modifed buffer
++ Use k/j or <Up>/<Down> keys to select the buffer.
++ Press a key to give a command to the currently selected buffer
+	- d : delete buffer
+	- w : wipe out buffer
+	- s : open buffer in a new horizontally split window
+	- u : open buffer
+	- <enter> : open buffer and leave QuickBuf; if the	buffer is already opened in a window, switch to that window.
++ d, w, and <enter> operations may fail (ex: delete a modified buffer), QuickBuf will inform you so that you can force them by preceding the above characters with an exclamation mark ('!'). Ex: !d, !w, !<enter>
++ Instead of moving the selection bar around to select a buffer, you can use a number to specify a buffer. For example: '2d' will delete the second buffer in the list. Try '3<enter>', '1w', '1!w'
++ Use 'l' key to toggle between LISTED and UNLISTED mode. Which mode QuickBuf enter first depends on the active buffer. While in UNLISTED mode, 'unlisted' buffers (the buffers you have deleted) are showed. Also:
+	- [+] indicates a loaded buffer
+	- 'd' command makes the selected buffer 'listed' again
++ Press <esc> key to leave QuickBuf
 
 Install:
-+ Source it with ':so qbuf.vim' or simply put it in /plugin under Vim's folder.
++ Source qbuf.vim with ':so qbuf.vim' or simply put it in /plugin under Vim's folder.
 + To define hotkey for QuickBuf:
 	Define g:qb_hotkey before source qbuf.vim, ex:
 		let g:qb_hotkey = "<F3>"
-	Or put that line in your _vimrc profile. Default, key "<F4>" is used.
+	Or put that line in your _vimrc profile. Default, key <F4> is used.
 	Whenever you change g:qb_hotkey, :so qbuf.vim again to update hotkey.
-
-Using:
-+ Press hotkey to activate QuickBuf. It doesn't create any buffer, doesn't
-	define any auto-command. It appears at the command-line area of Vim just when
-	you call.
-+ When in QuickBuf:
-	* mark current buffer, [+] mark modified buffer, a hilight bar mark your selection.
-	Keys j and k move the 'select bar' down and up.
-	Press <Enter> leave QuickBuf and edit the selected buffer.
-	Press u to view, d to delete, w to wipe out the selected buffer without leave
-		QuickBuf.
-	For speed, keys '3<Enter>' operate as if you select 3'th line and then <Enter>!
-		u, d, and w can also do the same. Try '1u', '2d' or '9w' !
-	If a buffer operation causes an error, QuickBuf informs you about it! You can type
-		a exclamation mark '!' right before <Enter> or u, d, w to force it success.
-		For example, keys '!<Enter>' force switch to you selected buffer, keys '2!w'
-		force wipe out the 2nd buffer.
-	At begining, QuickBuf just lists the listed buffer. But you can press l to switch
-		between 'listed' and 'unlisted' buffers. The list will be shown only if it has
-		at least 1 buffer :), otherwise QuickBuf exits when you switch to the list.
-	In the 'unlisted' mode, only buffers either 'loaded' or 'modifiable' are shown.
-	In 'unlisted' mode, [+] indicates a 'loaded' buffer, not a modified buffer.
-	In 'unlisted' mode, key d undeletes a buffer, that means, makes the buffer 'listed'.
-	Everything about quick operation (ie. '3d') and force operation (use '!') still
-		apply in 'unlisted' mode as in 'listed' mode.
-
-	Keys <Esc> or q will exit QuickBuf without doing anything!
-
-That's all! Any bug reports or suggestions please send to email address:
-	palnart@gmail.com
