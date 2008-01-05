@@ -51,13 +51,13 @@ function s:rebuild()
 	let l:alignsize = max(map(copy(s:buflist),'stridx(v:val,">")'))
 	call map(s:buflist, 'substitute(v:val, " <", repeat(" ",l:alignsize-stridx(v:val,">"))." <", "")')
 	call map(s:buflist, 'strpart(v:val, 0, &columns-3)')
-
-	if !exists("s:cursel") || (s:cursel >= s:blen) || (s:cursel < 0)
-		let s:cursel = s:blen-1
-	endif
 endfunc
 
 function SBRun()
+	if !exists("s:cursel") || (s:cursel >= s:blen) || (s:cursel < 0)
+		let s:cursel = s:blen-1
+	endif
+
 	if s:blen < 1
 		echoh WarningMsg | echo "No" s:unlisted ? "unlisted" : "listed" "buffer!" | echoh None
 		call s:init(0)
@@ -95,6 +95,7 @@ endfunc
 
 function s:init(onStart)
 	if a:onStart
+		set nolazyredraw
 		let s:unlisted = 1 - getbufvar("%", "&buflisted")
 		let s:cursorbg = synIDattr(hlID("Cursor"),"bg")
 		let s:cursorfg = synIDattr(hlID("Cursor"),"fg")
@@ -109,6 +110,7 @@ function s:init(onStart)
 		cmap <down> j
 
 		call s:rebuild()
+		let s:cursel = match(s:buflist, '^\d*\*')
 		call s:setcmdh(s:blen+1)
 	else
 		call s:setcmdh(s:cmdh)
