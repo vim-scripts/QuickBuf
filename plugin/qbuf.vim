@@ -1,25 +1,35 @@
+"=====================
+"	QuickBuf
+"	version 1.69
+"=====================
 if v:version < 700
 	finish
 endif
-
-if !exists("g:qb_hotkey") || g:qb_hotkey == ""
-	let g:qb_hotkey = "<F4>"
-endif
-exe "nnoremap <unique>" g:qb_hotkey " :cal <SID>init(1)<cr>:cal SBRun()<cr>"
-exe "cnoremap <unique>" g:qb_hotkey "<Esc>"
 
 if exists("g:qb_loaded") && g:qb_loaded
 	finish
 endif
 let g:qb_loaded = 1
 
-let s:action2cmd = {"z": 'call <SID>switchbuf(#,"")', "!z": 'call <SID>switchbuf(#,"!")',
-			\"u": "hid b #|let s:cursel = (s:cursel+1) % s:blen",
+if !exists("g:qb_hotkey") || g:qb_hotkey == ""
+	let g:qb_hotkey = "<F4>"
+endif
+exe "nnoremap <unique>" g:qb_hotkey " :cal <SID>init(1)<cr>:cal SBRun()<cr>"
+
+let s:action2cmd = {
+			\"z": 'call <SID>switchbuf(#,"")', "!z": 'call <SID>switchbuf(#,"!")',
+			\"f": 'call <SID>switchbuf(#,"")', "!f": 'call <SID>switchbuf(#,"!")',
+			\"F": 'call <SID>switchbuf(#,"!")',
 			\"s": "sb #",
+			\"v": "vert sb #",
+			\"e": "hid b #|let s:cursel = (s:cursel+1) % s:blen",
 			\"d": 'call <SID>qbufdcmd(#,"")', "!d": 'call <SID>qbufdcmd(#,"!")',
+			\"D": 'call <SID>qbufdcmd(#,"!")',
 			\"w": "bw #", "!w": "bw! #",
+			\"W": "bw! #",
 			\"l": "let s:unlisted = 1 - s:unlisted",
-			\"c": 'call <SID>closewindow(#,"")'}
+			\"c": 'call <SID>closewindow(#,"")'
+			\}
 
 function s:rebuild()
 	redir @y | silent ls! | redir END
@@ -62,6 +72,9 @@ function SBRun()
 	if !exists("s:cursel") || (s:cursel >= s:blen) || (s:cursel < 0)
 		let s:cursel = s:blen-1
 	endif
+	if !exists("s:old_cursel")
+		let s:old_cursel = s:cursel
+	endif
 
 	if s:blen < 1
 		echoh WarningMsg | echo "No" s:unlisted ? "unlisted" : "listed" "buffer!" | echoh None
@@ -98,6 +111,7 @@ function SBRun()
 	call s:setcmdh(s:blen+1)
 endfunc
 
+let s:klist = ["j","J","k","K", "f", "F", "e", "d", "D", "w", "W", "l", "s", "v", "c", "q"]
 function s:init(onStart)
 	if a:onStart
 		set nolazyredraw
@@ -105,14 +119,19 @@ function s:init(onStart)
 		let s:cursorbg = synIDattr(hlID("Cursor"),"bg")
 		let s:cursorfg = synIDattr(hlID("Cursor"),"fg")
 		let s:cmdh = &cmdheight
-		hi Cursor guibg=NONE guifg=NONE
+		"hi Cursor guibg=NONE guifg=NONE
 
-		let s:klist = ["j", "k", "u", "d", "w", "l", "s", "c"]
 		for l:key in s:klist
-			exe "cnoremap ".l:key." ".l:key."<cr>:cal SBRun()<cr>"
+			if l:key == "q"
+				exe "cnoremap ".l:key." :cal s:init(0)<cr>:echo''<cr>"
+			else
+				exe "cnoremap ".l:key." ".l:key."<cr>:cal SBRun()<cr>"
+			endif
 		endfor
 		cmap <up> k
 		cmap <down> j
+		cnoremap <space> <cr>
+		exe "cnoremap <c-c> :cal s:init(0)<cr>:echo''<cr>"
 
 		call s:rebuild()
 		let s:cursel = match(s:buflist, '^\d*\*')
@@ -124,7 +143,9 @@ function s:init(onStart)
 		endfor
 		cunmap <up>
 		cunmap <down>
-		exe "hi Cursor guibg=" . s:cursorbg . " guifg=".((s:cursorfg == "") ? "NONE" : s:cursorfg)
+		cunmap <space>
+		cunmap <c-c>
+		"exe "hi Cursor guibg=" . s:cursorbg . " guifg=".((s:cursorfg == "") ? "NONE" : s:cursorfg)
 	endif
 endfunc
 
