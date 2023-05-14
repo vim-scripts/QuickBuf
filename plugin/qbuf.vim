@@ -1,6 +1,6 @@
 "=====================
 "	QuickBuf
-"	version 1.69
+"	version 1.7
 "=====================
 if v:version < 700
 	finish
@@ -75,6 +75,10 @@ function SBRun()
 	if !exists("s:old_cursel")
 		let s:old_cursel = s:cursel
 	endif
+	if !exists("s:hasMore")
+		let s:hasMore = &more
+	endif
+	set nomore
 
 	if s:blen < 1
 		echoh WarningMsg | echo "No" s:unlisted ? "unlisted" : "listed" "buffer!" | echoh None
@@ -106,6 +110,9 @@ function SBRun()
 		endif
 	elseif s:update_buf(l:pkey)
 		call s:init(0)
+		if s:hasMore
+			set more
+		endif
 		return
 	endif
 	call s:setcmdh(s:blen+1)
@@ -181,8 +188,10 @@ endfunc
 
 function s:setcmdh(height)
 	if a:height > &lines - winnr('$') * (&winminheight+1) - 1
-		call s:init(0)
-		echo "\r"|echoerr "QBuf E1: No room to display buffer list"
+		"call s:init(0)
+		"exe "set cmdheight=".s:blen
+		exe "set cmdheight=".1
+		"echo "\r"|echoerr "QBuf E1: No room to display buffer list"
 	else
 		exe "set cmdheight=".a:height
 	endif
