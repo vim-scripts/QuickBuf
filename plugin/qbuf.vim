@@ -100,14 +100,19 @@ function SBRun()
 	if s:unlisted
 		echoh None
 	endif
-	if l:pkey =~ "j$"
+	echoh l:pkey
+	if l:pkey =~# "j$"
 		let s:cursel = (s:cursel+1) % s:blen
-	elseif l:pkey =~ "k$"
+	elseif l:pkey =~# "k$"
 		if s:cursel == 0
 			let s:cursel = s:blen - 1
 		else
 			let s:cursel -= 1
 		endif
+	elseif l:pkey =~# "K$"
+		let s:cursel = 0
+	elseif l:pkey =~# "J$"
+		let s:cursel = s:blen+1
 	elseif s:update_buf(l:pkey)
 		call s:init(0)
 		if s:hasMore
@@ -118,7 +123,7 @@ function SBRun()
 	call s:setcmdh(s:blen+1)
 endfunc
 
-let s:klist = ["j","J","k","K", "f", "F", "e", "d", "D", "w", "W", "l", "s", "v", "c", "q"]
+let s:klist = ["j","J","k","K","f","F","e","d","D","w","W","l","s","v","c","q"]
 function s:init(onStart)
 	if a:onStart
 		set nolazyredraw
