@@ -12,7 +12,7 @@ QuickBuf
 	- * : the buffer being opened in the active window  
 	- = : a buffer being opened in a window, but not active  
 	- [+] : modifed buffer  
->+ Use k/j or <Up>/<Down> keys to select the buffer.
+>+ Use j/k \<Up>/\<Down> goto prev/next line, J/K goto first/last line 
 >+ Press a key to give a command to the currently selected buffer  
 	- d/D : del/!delete buffer  
 	- w/W : wipe/!wipe out buffer  
